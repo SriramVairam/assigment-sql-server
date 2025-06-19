@@ -157,3 +157,31 @@ BEGIN
         END
     END
 END;
+
+
+
+
+
+-- Set your target manager ID here
+DECLARE @ManagerId INT = 101; -- Example: Manager with ID 101
+
+WITH EmployeeHierarchy AS (
+    -- Anchor member: Direct reports
+    SELECT 
+        EmployeeId,
+        Name,
+        ManagerId
+    FROM Employees
+    WHERE ManagerId = @ManagerId
+
+    UNION ALL
+
+    -- Recursive member: Indirect reports
+    SELECT 
+        e.EmployeeId,
+        e.Name,
+        e.ManagerId
+    FROM Employees e
+    INNER JOIN EmployeeHierarchy eh ON e.ManagerId = eh.EmployeeId
+)
+SELECT * FROM EmployeeHierarchy;
